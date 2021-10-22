@@ -7,12 +7,12 @@ from func import *
 
 sourcePath_land = Path.cwd() / 'optimize/landClassify'
 
-resPath_Segm = Path.cwd() / 'optimize/SegmentationClass'
-resPath_village = Path.cwd() / 'optimize/village'
-resPath_mountain = Path.cwd() / 'optimize/mountain'
-resPath_water = Path.cwd() / 'optimize/water'
-resPath_forest = Path.cwd() / 'optimize/forest'
-resPath_farm = Path.cwd() / 'optimize/farm'
+targetPath_Segm = Path.cwd() / 'optimize/SegmentationClass'
+targetPath_village = Path.cwd() / 'optimize/village'
+targetPath_mountain = Path.cwd() / 'optimize/mountain'
+targetPath_water = Path.cwd() / 'optimize/water'
+targetPath_forest = Path.cwd() / 'optimize/forest'
+targetPath_farm = Path.cwd() / 'optimize/farm'
 
 tempPath_village = Path.cwd() / 'optimize/village_temp'
 tempPath_mountain = Path.cwd() / 'optimize/mountain_temp'
@@ -51,14 +51,14 @@ def element_merge():
     """
     将多个要素合并起来并保存
     """
-    for _, fileName in enumerate(resPath_mountain.iterdir()):
+    for _, fileName in enumerate(targetPath_mountain.iterdir()):
         name = fileName.name
         print(name)
-        image_village = np.array(Image.open(resPath_village / name), np.uint8)
-        image_mountain = np.array(Image.open(resPath_mountain / name), np.uint8)
-        image_water = np.array(Image.open(resPath_water / name), np.uint8)
-        image_forest = np.array(Image.open(resPath_forest / name), np.uint8)
-        image_farm = np.array(Image.open(resPath_farm / name), np.uint8)
+        image_village = np.array(Image.open(targetPath_village / name), np.uint8)
+        image_mountain = np.array(Image.open(targetPath_mountain / name), np.uint8)
+        image_water = np.array(Image.open(targetPath_water / name), np.uint8)
+        image_forest = np.array(Image.open(targetPath_forest / name), np.uint8)
+        image_farm = np.array(Image.open(targetPath_farm / name), np.uint8)
 
         result = np.zeros_like(image_village, np.uint8)
 
@@ -70,7 +70,7 @@ def element_merge():
         result[image_village==1] = 6    # 村落（浅蓝色）
         result[image_water==1] = 4      # 水（深蓝色）
         result[result==0] = 2
-        utils.lblsave(resPath_Segm / name, result)
+        utils.lblsave(targetPath_Segm / name, result)
 
 def element_adjust(source_path, target_path):
     """
@@ -125,7 +125,7 @@ def temp():
         image = np.array(Image.open(fileName), np.uint8)
         result = np.zeros_like(image, np.uint8)
         result[image==0] = 1
-        utils.lblsave(resPath_mountain / name, result)
+        utils.lblsave(targetPath_mountain / name, result)
 
 def temp1():
     for idx, fileName in enumerate(sourcePath_land.iterdir()):
@@ -143,7 +143,7 @@ def replenish():
     for idx, filename in enumerate(sourcePath_land.iterdir()):
         name = filename.name
         if name not in current_img:
-            path = resPath_water / name
+            path = targetPath_water / name
             image = np.zeros((2448, 2448), dtype=np.uint8)
             utils.lblsave(path, image)
 
@@ -153,18 +153,16 @@ if __name__ == "__main__":
     # path = Path(r'optimize')
     # delete_file(path, nameList)
     # change_name(path, '.jpg')
-    element_merge()
-    # element_extract()
-    # element_adjust(tempPath_water, resPath_water)
     # element_merge()
+    # element_extract()
+    # element_adjust(tempPath_water, targetPath_water)
+    element_merge()
     # image = Image.open('optimize/SegmentationClass/bagui.png')
     # image = np.array(image)
     # print(image.max())
-    # for idx, fileName in enumerate(resPath_Segm.iterdir()):
+    # for idx, fileName in enumerate(targetPath_Segm.iterdir()):
     #     name = fileName.name
     #     # print(name)
     #     image = np.array(Image.open(fileName), np.uint8)
     #     print(image.max())
-
-
-
+    # delete_file(Path.cwd(), ['lalie'])
